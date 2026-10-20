@@ -2,7 +2,7 @@ name: burndo
 
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:16.14-alpine
     environment:
       POSTGRES_USER: burndo
       POSTGRES_PASSWORD: burndo
