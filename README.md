@@ -43,17 +43,15 @@ docker compose up -d
 
 ### Проверка работоспособности
 
-```bash
-curl http://localhost:8000/health
+Сценарий из трёх шагов. Скрипт ждёт, пока сервисы поднимутся, и завершается с кодом 0, только если прошли все шаги.
+
+1. API запущен: `GET http://localhost:8000/` возвращает `{"message":"BurnDo API is running"}`.
+2. База подключена: `GET http://localhost:8000/health` возвращает HTTP 200 и `{"status":"ok","database":"connected"}`.
+3. Интерфейс открывается: `GET http://localhost:5173/` возвращает страницу BurnDo.
+
+```powershell
+.\scripts\check.ps1
 ```
-
-Ожидаемый ответ — HTTP 200 и тело:
-
-```json
-{ "status": "ok", "database": "connected" }
-```
-
-Корень API http://localhost:8000/ отвечает `{"message":"BurnDo API is running"}`. В браузере на http://localhost:5173 открывается страница BurnDo.
 
 ### Локальный запуск
 
@@ -79,4 +77,4 @@ npm ci
 npm run dev
 ```
 
-Проверка та же: http://localhost:5173, http://localhost:8000/ и http://localhost:8000/health.
+Проверка та же: `.\scripts\check.ps1`.
