@@ -5,7 +5,7 @@
 ## Стек
 
 - Frontend: TypeScript, React, Vite. Архитектура — Feature-Sliced Design, код в `src/frontend/src`.
-- Backend: Python, FastAPI, код в `src/backend`.
+- Backend: Python 3.14.5, FastAPI, код в `src/backend`. Версия зафиксирована в `.python-version`.
 - База данных: PostgreSQL.
 
 Слои фронтенда, которые уже есть: `app`, `pages`, `shared`. Слои `widgets`, `features` и `entities` добавляются вместе с первой функциональностью, которой они нужны.

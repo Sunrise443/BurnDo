@@ -51,7 +51,7 @@
 ## Технологический стек:
 
 - Frontend - TypeScript, React, Vite
-- Backend - Python, FastAPI
+- Backend - Python 3.14.5, FastAPI
 - База данных - PostgreSQL
 
 ## Лицензия:
