@@ -78,3 +78,36 @@ npm run dev
 ```
 
 Проверка та же: `.\scripts\check.ps1`.
+
+## Проверка запуска по инструкции от 20.10.2026, Кашкаровой Ариной, ОС: Windows 11
+1. Сборка докера:
+```bash
+$ docker compose build
+[+] Building 35.9s (25/25) FINISHED  
+ . . .
+[+] build 2/2
+ ✔ Image burndo-backend  Built                                                                                                                                            36.1s
+ ✔ Image burndo-frontend Built  
+```
+2. Запуск проекта:
+```bash
+$ docker compose up -d
+[+] up 19/19
+ ✔ Image postgres:16.14-alpine Pulled                                                                                                                                     13.9s
+ ✔ Volume burndo_postgres_data Created                                                                                                                                     0.0s
+ ✔ Network burndo_default      Created                                                                                                                                     0.0s
+ ✔ Container burndo-postgres-1 Healthy                                                                                                                                     9.8s
+ ✔ Container burndo-backend-1  Started                                                                                                                                     6.3s
+ ✔ Container burndo-frontend-1 Started
+```
+3. Запуск скрипта на проверку работоспособности:
+```bash
+$ powershell.exe -ExecutionPolicy Bypass -File ./scripts/check.ps1
+1. API запущен
+  ОК: {"message":"BurnDo API is running"}
+2. База подключена
+  ОК: {"status":"ok","database":"connected"}
+3. Интерфейс открывается
+  ОК: страница готова
+Проверка успешно завершена
+```
