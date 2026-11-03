@@ -1,0 +1,52 @@
+erDiagram
+    CLASS {
+        int id PK
+        string name
+        datetime date
+        string classroom
+        int deadline_tasks FK
+        int study_group FK
+        int subject FK
+    }
+
+    TASK {
+        int id PK
+        string title
+        string description
+        datetime deadline
+        int subject FK
+    }
+
+    SUBJECT {
+        int id PK
+        string name
+        string tag
+        string teacher
+        string class_links
+        string assessment_type
+        string passing_criteria
+        string tasks_requirements
+        string notes
+        int study_group FK
+    }
+
+    STUDY_GROUP {
+        int id PK
+        string name
+    }
+
+    USER {
+        int id PK
+        string name
+        string email
+        string password
+        int role FK
+        int study_group FK
+    }
+
+    CLASS |o--o{ TASK : deadline_tasks
+    CLASS |o--|| STUDY_GROUP : study_group
+    CLASS |o--|| SUBJECT : subject
+    TASK |o--|| SUBJECT : subject
+    SUBJECT |o--|| STUDY_GROUP : study_group
+    USER ||--|| STUDY_GROUP : study_group
