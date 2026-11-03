@@ -1,24 +1,24 @@
 erDiagram
     CLASS {
-        PK id
+        int id PK
         string name
         datetime date
         string classroom
-        FK deadline_tasks
-        FK study_group
-        FK subject
+        int deadline_tasks FK
+        int study_group FK
+        int subject FK
     }
 
     TASK {
-        PK id
+        int id PK
         string title
         string description
         datetime deadline
-        FK subject
+        int subject FK
     }
 
     SUBJECT {
-        PK id
+        int id PK
         string name
         string tag
         string teacher
@@ -27,21 +27,21 @@ erDiagram
         string passing_criteria
         string tasks_requirements
         string notes
-        FK study_group
+        int study_group FK
     }
 
     STUDY_GROUP {
-        PK id
+        int id PK
         string name
     }
 
     USER {
-        PK id
+        int id PK
         string name
         string email
         string password
-        FK role
-        FK study_group
+        int role FK
+        int study_group FK
     }
 
     CLASS |o--o{ TASK : deadline_tasks
