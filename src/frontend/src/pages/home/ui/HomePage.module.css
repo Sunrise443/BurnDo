@@ -1,0 +1,32 @@
+.page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  display: grid;
+  align-content: center;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.kicker {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b6258;
+}
+
+.title {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.lead {
+  margin: 1rem 0 0;
+  max-width: 28rem;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: #3f3a34;
+}
