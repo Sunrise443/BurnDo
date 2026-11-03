@@ -1,0 +1,42 @@
+flowchart TB
+    subgraph rowStarosta[" "]
+        direction LR
+        starosta[Староста]
+        ucAdd([Добавить или удалить<br/>пользователя из группы])
+        ucAssign([Назначить замстаросты])
+        ucList([Посмотреть список группы])
+        starosta --> ucAdd
+        starosta --> ucAssign
+        starosta --> ucList
+    end
+
+    subgraph rowDeputy[" "]
+        direction LR
+        deputy[Замстаросты]
+        ucEditTask([Редактировать задание])
+        ucEditSubject([Редактировать<br/>информацию о предмете])
+        ucMakeSchedule([Составить<br/>расписание занятий])
+        deputy --> ucEditTask
+        deputy --> ucEditSubject
+        deputy --> ucMakeSchedule
+    end
+
+    subgraph rowStudent[" "]
+        direction LR
+        student[Студент]
+        ucAccount([Регистрация, вход, выход,<br/>удаление ака и сброс пароля])
+        ucViewSchedule([Посмотреть расписание])
+        ucViewSubject([Посмотреть<br/>информацию о предмете])
+        ucViewTask([Посмотреть задание])
+        student --> ucAccount
+        student --> ucViewSchedule
+        student --> ucViewSubject
+        student --> ucViewTask
+    end
+
+    starosta ==> deputy
+    deputy ==> student
+
+    style rowStarosta fill:none,stroke:none
+    style rowDeputy fill:none,stroke:none
+    style rowStudent fill:none,stroke:none
