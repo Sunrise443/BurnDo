@@ -13,12 +13,14 @@ export function SelectMenu({
   options,
   onChange,
   placeholder = 'Не выбрано',
+  hideLabel = false,
 }: {
   label: string
   value: string
   options: MenuOption[]
   onChange: (value: string) => void
   placeholder?: string
+  hideLabel?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const [above, setAbove] = useState(false)
@@ -44,9 +46,11 @@ export function SelectMenu({
 
   return (
     <div className={styles.menu} ref={rootRef}>
-      <span className={styles.menuLabel} id={`${listId}-label`}>
-        {label}
-      </span>
+      {hideLabel ? null : (
+        <span className={styles.menuLabel} id={`${listId}-label`}>
+          {label}
+        </span>
+      )}
       <div className={styles.menuControl}>
         <button
           type="button"
@@ -54,6 +58,7 @@ export function SelectMenu({
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-controls={listId}
+          aria-label={hideLabel ? label : undefined}
           onClick={() => {
             const rect = rootRef.current?.getBoundingClientRect()
             setAbove(rect ? window.innerHeight - rect.bottom < 220 : false)
@@ -66,7 +71,13 @@ export function SelectMenu({
           </span>
         </button>
         {open ? (
-          <ul className={above ? `${styles.menuList} ${styles.popAbove}` : styles.menuList} id={listId} role="listbox" aria-labelledby={`${listId}-label`}>
+          <ul
+            className={above ? `${styles.menuList} ${styles.popAbove}` : styles.menuList}
+            id={listId}
+            role="listbox"
+            aria-label={hideLabel ? label : undefined}
+            aria-labelledby={hideLabel ? undefined : `${listId}-label`}
+          >
             {options.length ? (
               options.map((option) => {
                 const active = option.value === value

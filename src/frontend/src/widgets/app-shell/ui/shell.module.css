@@ -5,10 +5,9 @@
 .bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem 1.5rem;
   align-items: center;
-  justify-content: space-between;
-  padding: 0.85rem 4.75rem 0.85rem 1.5rem;
+  gap: 0.65rem 2rem;
+  padding: 0.85rem 7.15rem 0.85rem 1.5rem;
   border-bottom: 1px solid var(--line);
   background: var(--surface);
 }
@@ -24,7 +23,8 @@
 .nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.9rem;
+  justify-content: flex-start;
+  gap: 0.9rem 1.15rem;
 }
 
 .nav a {
@@ -36,9 +36,39 @@
   color: var(--accent);
 }
 
-.who {
-  margin: 0;
-  color: var(--muted);
+.profile {
+  position: fixed;
+  top: 0.45rem;
+  right: 3.9rem;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  text-decoration: none;
+  transition: background-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.profile:hover,
+.profile[aria-current='page'] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.profile:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.profileIcon {
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
 .content {
