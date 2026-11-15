@@ -10,6 +10,8 @@ import { Button } from '@/shared/ui/index.ts'
 import { CalendarBoard } from '@/widgets/calendar-board/index.ts'
 import { DeadlineList } from '@/widgets/deadline-list/index.ts'
 
+import styles from './CalendarPage.module.css'
+
 export function CalendarPage() {
   const me = useMe()
   const group = useGroup()
@@ -20,13 +22,17 @@ export function CalendarPage() {
   const editable = canEditAcademic(me.data?.role)
 
   return (
-    <div>
-      <h1>Календарь</h1>
-      <CalendarBoard timeZone={timeZone} />
-      <h2>Ближайшие дедлайны</h2>
-      <DeadlineList timeZone={timeZone} />
+    <div className={styles.page}>
+      <div className={styles.block}>
+        <h1>Календарь</h1>
+        <CalendarBoard timeZone={timeZone} />
+      </div>
+      <section className={styles.block}>
+        <h2>Ближайшие дедлайны</h2>
+        <DeadlineList timeZone={timeZone} />
+      </section>
       {editable ? (
-        <section>
+        <section className={styles.actions}>
           <Button type="button" onClick={() => setCreating((value) => !value)}>
             Добавить занятие
           </Button>

@@ -7,6 +7,9 @@ import { Button } from '@/shared/ui/index.ts'
 
 import styles from './calendar.module.css'
 
+const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+const weekdayLong = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
+
 type Selection =
   | { kind: 'lesson'; id: number; title: string; subjectId: number; taskId: number | null; when: string; place: string }
   | { kind: 'deadline'; id: number; title: string; subjectId: number; subjectTag: string; when: string }
@@ -55,11 +58,21 @@ export function CalendarBoard({ timeZone }: { timeZone: string }) {
       {calendar.isError ? <p>Не удалось загрузить календарь.</p> : null}
       {mode === 'week' ? (
         <div className={styles.fortnight}>
+          <div className={styles.weekdays}>
+            {weekdays.map((label) => (
+              <span key={label} className={styles.weekday}>
+                {label}
+              </span>
+            ))}
+          </div>
           {fortnight.weeks.map((week) => (
             <div key={week[0]} className={styles.week}>
-              {week.map((day) => (
+              {week.map((day, index) => (
                 <div key={day} className={styles.day}>
-                  <h3>{formatDay(day, timeZone)}</h3>
+                  <h3>
+                    <span className={styles.visuallyHidden}>{weekdayLong[index]}, </span>
+                    {formatDay(day, timeZone)}
+                  </h3>
                   {(lessonsByDay.get(day) ?? []).map((lesson) => (
                     <button
                       key={`lesson-${lesson.id}`}
@@ -107,7 +120,7 @@ export function CalendarBoard({ timeZone }: { timeZone: string }) {
         </div>
       ) : (
         <div className={styles.month}>
-          {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((label) => (
+          {weekdays.map((label) => (
             <span key={label} className={styles.weekday}>
               {label}
             </span>

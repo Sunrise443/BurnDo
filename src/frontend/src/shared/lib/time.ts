@@ -29,7 +29,6 @@ export function formatDateTime(iso: string, timeZone: string): string {
 export function formatDay(ymd: string, timeZone: string): string {
   return new Intl.DateTimeFormat('ru-RU', {
     timeZone,
-    weekday: 'short',
     day: 'numeric',
     month: 'short',
   }).format(new Date(toUtcIso(`${ymd}T12:00`, timeZone)))

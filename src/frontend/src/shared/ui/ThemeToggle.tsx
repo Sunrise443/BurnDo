@@ -40,7 +40,36 @@ export function ThemeToggle() {
         setTheme(next)
       }}
     >
-      {next === 'dark' ? 'Тёмная' : 'Светлая'}
+      <span className={styles.themeIcons} aria-hidden="true">
+        <SunIcon />
+        <MoonIcon />
+      </span>
     </button>
+  )
+}
+
+function SunIcon() {
+  return (
+    <svg className={styles.sun} viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4.2" fill="currentColor" />
+      <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <path d="M12 2.4v2.3" />
+        <path d="M12 19.3v2.3" />
+        <path d="M2.4 12h2.3" />
+        <path d="M19.3 12h2.3" />
+        <path d="M5.1 5.1l1.6 1.6" />
+        <path d="M17.3 17.3l1.6 1.6" />
+        <path d="M18.9 5.1l-1.6 1.6" />
+        <path d="M6.7 17.3l-1.6 1.6" />
+      </g>
+    </svg>
+  )
+}
+
+function MoonIcon() {
+  return (
+    <svg className={styles.moon} viewBox="0 0 24 24">
+      <path fill="currentColor" d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z" />
+    </svg>
   )
 }
