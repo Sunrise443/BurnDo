@@ -6,7 +6,7 @@ import type { Subject } from '@/entities/subject/index.ts'
 import type { Task, TaskInput } from '@/entities/task/index.ts'
 import { api, isVersionConflict, messageOf, versionConflictNotice } from '@/shared/api/index.ts'
 import { toLocalInput, toUtcIso } from '@/shared/lib/index.ts'
-import { Button, Notice, SelectField, TextArea, TextField, uiStyles } from '@/shared/ui/index.ts'
+import { Button, DateTimeField, Notice, SelectMenu, TextArea, TextField, uiStyles } from '@/shared/ui/index.ts'
 
 export function TaskForm({
   subjects,
@@ -80,19 +80,16 @@ export function TaskForm({
         mutation.mutate()
       }}
     >
-      <SelectField
+      <SelectMenu
         label="Предмет"
-        value={values.subject_id}
-        onChange={(event) => setValues((current) => ({ ...current, subject_id: Number(event.target.value) }))}
-      >
-        {subjects.map((subject) => (
-          <option key={subject.id} value={subject.id}>{subject.name}</option>
-        ))}
-      </SelectField>
+        value={String(values.subject_id)}
+        options={subjects.map((subject) => ({ value: String(subject.id), label: subject.name }))}
+        onChange={(next) => setValues((current) => ({ ...current, subject_id: Number(next) }))}
+      />
       <TextField label="Название" required value={values.title} onChange={(event) => setValues((current) => ({ ...current, title: event.target.value }))} />
-      <TextArea label="Описание" value={values.description} onChange={(event) => setValues((current) => ({ ...current, description: event.target.value }))} />
-      <TextArea label="Материалы и ссылки" value={values.materials} onChange={(event) => setValues((current) => ({ ...current, materials: event.target.value }))} />
-      <TextField label="Срок" type="datetime-local" required value={values.deadline} onChange={(event) => setValues((current) => ({ ...current, deadline: event.target.value }))} />
+      <TextArea label="Описание" rows={2} value={values.description} onChange={(event) => setValues((current) => ({ ...current, description: event.target.value }))} />
+      <TextArea label="Материалы и ссылки" rows={2} value={values.materials} onChange={(event) => setValues((current) => ({ ...current, materials: event.target.value }))} />
+      <DateTimeField label="Срок" required value={values.deadline} onChange={(next) => setValues((current) => ({ ...current, deadline: next }))} />
       {notice ? <Notice>{notice}</Notice> : null}
       {error ? <Notice tone="error">{error}</Notice> : null}
       <Button type="submit" disabled={mutation.isPending}>{task ? 'Сохранить' : 'Добавить задание'}</Button>

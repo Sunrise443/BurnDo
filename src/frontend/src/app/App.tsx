@@ -5,7 +5,6 @@ import { RequireAuth, RequireGroup } from './guards.tsx'
 import { AccountPage } from '@/pages/account/index.ts'
 import { CalendarPage } from '@/pages/calendar/index.ts'
 import { ForgotPasswordPage } from '@/pages/forgot-password/index.ts'
-import { HomePage } from '@/pages/home/index.ts'
 import { JoinPage } from '@/pages/join/index.ts'
 import { LoginPage } from '@/pages/login/index.ts'
 import { MembersPage } from '@/pages/members/index.ts'
@@ -26,7 +25,7 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<LoginPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />

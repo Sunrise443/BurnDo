@@ -7,6 +7,8 @@ import { SubjectForm } from '@/features/subject-form/index.ts'
 import { canEditAcademic } from '@/shared/model/index.ts'
 import { Button, uiStyles } from '@/shared/ui/index.ts'
 
+import styles from './SubjectListPage.module.css'
+
 export function SubjectListPage() {
   const me = useMe()
   const subjects = useSubjects()
@@ -14,13 +16,16 @@ export function SubjectListPage() {
   return (
     <div className={uiStyles.stack}>
       <h1>Предметы</h1>
-      {subjects.data?.length ? (
-        subjects.data.map((subject) => (
-          <article key={subject.id} className={uiStyles.card}>
-            <h2><Link to={`/subjects/${subject.id}`}>{subject.name}</Link></h2>
-            <p>{subject.teacher || 'Преподаватель не указан'}</p>
-          </article>
-        ))
+      {subjects.isLoading ? (
+        <p>Загрузка…</p>
+      ) : subjects.data?.length ? (
+        <div className={styles.list}>
+          {subjects.data.map((subject) => (
+            <Link key={subject.id} className={styles.plate} to={`/subjects/${subject.id}`}>
+              {subject.name}
+            </Link>
+          ))}
+        </div>
       ) : (
         <p>Предметов пока нет.</p>
       )}

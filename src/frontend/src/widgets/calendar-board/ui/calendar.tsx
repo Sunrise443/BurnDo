@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { useCalendar } from '@/entities/calendar/index.ts'
-import { dayKey, formatDateTime, formatDay, monthRange, shiftAnchor, toUtcIso, weekRange } from '@/shared/lib/index.ts'
+import { dayKey, formatDateTime, formatDay, fortnightRange, monthRange, shiftAnchor, shiftMonth, toUtcIso } from '@/shared/lib/index.ts'
 import { Button } from '@/shared/ui/index.ts'
 
 import styles from './calendar.module.css'
@@ -15,78 +15,93 @@ export function CalendarBoard({ timeZone }: { timeZone: string }) {
   const [mode, setMode] = useState<'week' | 'month'>('week')
   const [anchor, setAnchor] = useState(() => new Date())
   const [selected, setSelected] = useState<Selection | null>(null)
-  const week = weekRange(anchor, timeZone)
+  const fortnight = fortnightRange(anchor, timeZone)
   const month = monthRange(anchor, timeZone)
-  const range = mode === 'week' ? week : month
+  const range = mode === 'week' ? fortnight : month
   const calendar = useCalendar(range.start, range.end)
-  const step = mode === 'week' ? 7 : 30
+  const period = mode === 'month' ? capitalize(month.label) : formatSpan(fortnight.days, timeZone)
+
+  function step(direction: -1 | 1) {
+    setAnchor((current) =>
+      mode === 'week' ? shiftAnchor(current, timeZone, direction * 14) : shiftMonth(current, timeZone, direction),
+    )
+  }
 
   return (
     <section className={styles.board}>
       <div className={styles.toolbar}>
         <div>
-          <Button type="button" tone="ghost" onClick={() => setMode('week')}>Неделя</Button>
-          <Button type="button" tone="ghost" onClick={() => setMode('month')}>Месяц</Button>
+          <button type="button" className={mode === 'week' ? styles.modeOn : styles.mode} aria-pressed={mode === 'week'} onClick={() => setMode('week')}>
+            Неделя
+          </button>
+          <button type="button" className={mode === 'month' ? styles.modeOn : styles.mode} aria-pressed={mode === 'month'} onClick={() => setMode('month')}>
+            Месяц
+          </button>
         </div>
-        <div>
-          <Button type="button" tone="ghost" onClick={() => setAnchor((current) => shiftAnchor(current, timeZone, -step))}>
-            Назад
-          </Button>
+        <div className={styles.nav}>
+          <button type="button" className={styles.arrow} aria-label="Назад" onClick={() => step(-1)}>
+            <Chevron direction="left" />
+          </button>
+          <p className={styles.period}>{period}</p>
+          <button type="button" className={styles.arrow} aria-label="Вперёд" onClick={() => step(1)}>
+            <Chevron direction="right" />
+          </button>
           <Button type="button" tone="ghost" onClick={() => setAnchor(new Date())}>Сегодня</Button>
-          <Button type="button" tone="ghost" onClick={() => setAnchor((current) => shiftAnchor(current, timeZone, step))}>
-            Дальше
-          </Button>
         </div>
       </div>
       {calendar.isLoading ? <p>Загрузка календаря…</p> : null}
       {calendar.isError ? <p>Не удалось загрузить календарь.</p> : null}
       {mode === 'week' ? (
-        <div className={styles.week}>
-          {week.days.map((day) => (
-            <div key={day} className={styles.day}>
-              <h3>{formatDay(day, timeZone)}</h3>
-              {calendar.data?.lessons
-                .filter((lesson) => dayKey(lesson.starts_at, timeZone) === day)
-                .map((lesson) => (
-                  <button
-                    key={`lesson-${lesson.id}`}
-                    type="button"
-                    className={styles.lesson}
-                    onClick={() =>
-                      setSelected({
-                        kind: 'lesson',
-                        id: lesson.id,
-                        title: lesson.subject_name,
-                        subjectId: lesson.subject_id,
-                        taskId: lesson.task_id,
-                        when: `${formatDateTime(lesson.starts_at, timeZone)} – ${formatDateTime(lesson.ends_at, timeZone)}`,
-                        place: lesson.classroom,
-                      })
-                    }
-                  >
-                    {lesson.subject_name}
-                  </button>
-                ))}
-              {calendar.data?.deadlines
-                .filter((deadline) => dayKey(deadline.deadline, timeZone) === day)
-                .map((deadline) => (
-                  <button
-                    key={`deadline-${deadline.id}`}
-                    type="button"
-                    className={styles.deadline}
-                    onClick={() =>
-                      setSelected({
-                        kind: 'deadline',
-                        id: deadline.id,
-                        title: deadline.title,
-                        subjectId: deadline.subject_id,
-                        when: formatDateTime(deadline.deadline, timeZone),
-                      })
-                    }
-                  >
-                    {deadline.title}
-                  </button>
-                ))}
+        <div className={styles.fortnight}>
+          {fortnight.weeks.map((week) => (
+            <div key={week[0]} className={styles.week}>
+              {week.map((day) => (
+                <div key={day} className={styles.day}>
+                  <h3>{formatDay(day, timeZone)}</h3>
+                  {calendar.data?.lessons
+                    .filter((lesson) => dayKey(lesson.starts_at, timeZone) === day)
+                    .map((lesson) => (
+                      <button
+                        key={`lesson-${lesson.id}`}
+                        type="button"
+                        className={styles.lesson}
+                        onClick={() =>
+                          setSelected({
+                            kind: 'lesson',
+                            id: lesson.id,
+                            title: lesson.subject_name,
+                            subjectId: lesson.subject_id,
+                            taskId: lesson.task_id,
+                            when: `${formatDateTime(lesson.starts_at, timeZone)} – ${formatDateTime(lesson.ends_at, timeZone)}`,
+                            place: lesson.classroom,
+                          })
+                        }
+                      >
+                        {lesson.subject_name}
+                      </button>
+                    ))}
+                  {calendar.data?.deadlines
+                    .filter((deadline) => dayKey(deadline.deadline, timeZone) === day)
+                    .map((deadline) => (
+                      <button
+                        key={`deadline-${deadline.id}`}
+                        type="button"
+                        className={styles.deadline}
+                        onClick={() =>
+                          setSelected({
+                            kind: 'deadline',
+                            id: deadline.id,
+                            title: deadline.title,
+                            subjectId: deadline.subject_id,
+                            when: formatDateTime(deadline.deadline, timeZone),
+                          })
+                        }
+                      >
+                        {deadline.title}
+                      </button>
+                    ))}
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -125,4 +140,37 @@ export function CalendarBoard({ timeZone }: { timeZone: string }) {
       ) : null}
     </section>
   )
+}
+
+function Chevron({ direction }: { direction: 'left' | 'right' }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+      <path
+        d={direction === 'left' ? 'M11 4 L6 9 L11 14' : 'M7 4 L12 9 L7 14'}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function capitalize(value: string) {
+  return value ? value.charAt(0).toLocaleUpperCase('ru-RU') + value.slice(1) : value
+}
+
+function formatSpan(days: string[], timeZone: string) {
+  const format = (ymd: string, withYear: boolean) =>
+    new Intl.DateTimeFormat('ru-RU', {
+      timeZone,
+      day: 'numeric',
+      month: 'long',
+      year: withYear ? 'numeric' : undefined,
+    }).format(new Date(toUtcIso(`${ymd}T12:00`, timeZone)))
+  const start = days[0]
+  const end = days[days.length - 1]
+  const sameYear = start.slice(0, 4) === end.slice(0, 4)
+  return `${format(start, !sameYear)} — ${format(end, true)}`
 }

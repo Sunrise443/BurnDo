@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import type { Account } from '@/entities/session/index.ts'
 import { api, messageOf } from '@/shared/api/index.ts'
-import { Button, Notice, TextField, uiStyles } from '@/shared/ui/index.ts'
+import { Button, Notice, SelectMenu, TextField, uiStyles } from '@/shared/ui/index.ts'
 
 export function LoginForm() {
   const navigate = useNavigate()
@@ -82,13 +82,15 @@ export function RegisterForm() {
       <TextField label="Имя" required value={name} onChange={(event) => setName(event.target.value)} />
       <TextField label="Эл. почта" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} />
       <TextField label="Пароль" type="password" required minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} />
-      <label>
-        Роль
-        <select value={role} onChange={(event) => setRole(event.target.value as 'student' | 'head')}>
-          <option value="student">Студент</option>
-          <option value="head">Староста</option>
-        </select>
-      </label>
+      <SelectMenu
+        label="Роль"
+        value={role}
+        options={[
+          { value: 'student', label: 'Студент' },
+          { value: 'head', label: 'Староста' },
+        ]}
+        onChange={(next) => setRole(next as 'student' | 'head')}
+      />
       {role === 'head' ? (
         <TextField label="Название группы" value={groupName} onChange={(event) => setGroupName(event.target.value)} />
       ) : null}
@@ -100,12 +102,12 @@ export function RegisterForm() {
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState('')
-  const [message, setMessage] = useState<string | null>(null)
+  const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const mutation = useMutation({
     mutationFn: () =>
       api('/auth/password/forgot', { method: 'POST', body: JSON.stringify({ email }) }),
-    onSuccess: () => setMessage('Если адрес зарегистрирован, мы отправили ссылку для сброса пароля.'),
+    onSuccess: () => setSent(true),
     onError: (reason) => setError(messageOf(reason)),
   })
 
@@ -119,7 +121,12 @@ export function ForgotPasswordForm() {
       }}
     >
       <TextField label="Эл. почта" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} />
-      {message ? <Notice>{message}</Notice> : null}
+      {sent ? (
+        <Notice>
+          Если этот адрес зарегистрирован, письмо со ссылкой отправлено. В локальном запуске оно не приходит в почтовый ящик Gmail или Яндекса, его можно открыть в{' '}
+          <a href="http://localhost:8025" target="_blank" rel="noreferrer">Mailpit</a>.
+        </Notice>
+      ) : null}
       {error ? <Notice tone="error">{error}</Notice> : null}
       <Button type="submit" disabled={mutation.isPending}>Отправить ссылку</Button>
     </form>

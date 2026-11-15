@@ -1,0 +1,18 @@
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem 0.7rem;
+  align-items: start;
+}
+
+.span {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 0.55rem;
+}
+
+@media (max-width: 720px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+}

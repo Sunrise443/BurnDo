@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 
 import { Button } from './Button.tsx'
 import styles from './ui.module.css'
@@ -53,6 +53,6 @@ export function ConfirmDialog({
   )
 }
 
-export function Notice({ children, tone = 'info' }: { children: string; tone?: 'info' | 'error' }) {
+export function Notice({ children, tone = 'info' }: { children: ReactNode; tone?: 'info' | 'error' }) {
   return <p className={tone === 'error' ? styles.error : styles.notice}>{children}</p>
 }

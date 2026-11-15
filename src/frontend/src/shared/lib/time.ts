@@ -46,6 +46,18 @@ export function weekRange(anchor: Date, timeZone: string) {
   }
 }
 
+export function fortnightRange(anchor: Date, timeZone: string) {
+  const today = ymdFromDate(anchor, timeZone)
+  const monday = addDays(today, -weekdayIndex(anchor, timeZone))
+  const days = Array.from({ length: 14 }, (_, index) => formatYmd(addDays(monday, index)))
+  return {
+    start: toUtcIso(`${days[0]}T00:00`, timeZone),
+    end: toUtcIso(`${formatYmd(addDays(monday, 14))}T00:00`, timeZone),
+    weeks: [days.slice(0, 7), days.slice(7)],
+    days,
+  }
+}
+
 export function monthRange(anchor: Date, timeZone: string) {
   const current = ymdFromDate(anchor, timeZone)
   const first = { year: current.year, month: current.month, day: 1 }
@@ -79,6 +91,15 @@ export function monthRange(anchor: Date, timeZone: string) {
 export function shiftAnchor(anchor: Date, timeZone: string, days: number): Date {
   const shifted = addDays(ymdFromDate(anchor, timeZone), days)
   return new Date(toUtcIso(`${formatYmd(shifted)}T12:00`, timeZone))
+}
+
+export function shiftMonth(anchor: Date, timeZone: string, delta: number): Date {
+  const current = ymdFromDate(anchor, timeZone)
+  const index = current.year * 12 + (current.month - 1) + delta
+  const year = Math.floor(index / 12)
+  const month = ((index % 12) + 12) % 12 + 1
+  const day = Math.min(current.day, daysInMonth(year, month))
+  return new Date(toUtcIso(`${formatYmd({ year, month, day })}T12:00`, timeZone))
 }
 
 export function dayKey(iso: string, timeZone: string): string {
@@ -123,6 +144,10 @@ function weekdayIndex(date: Date, timeZone: string): number {
   const weekday = zonedParts(date, timeZone).weekday
   const order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
   return Math.max(order.indexOf(weekday), 0)
+}
+
+function daysInMonth(year: number, month: number): number {
+  return new Date(Date.UTC(year, month, 0)).getUTCDate()
 }
 
 function addDays(value: Ymd, days: number): Ymd {

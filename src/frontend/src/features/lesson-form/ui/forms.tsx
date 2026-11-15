@@ -6,7 +6,7 @@ import type { Subject } from '@/entities/subject/index.ts'
 import type { Task } from '@/entities/task/index.ts'
 import { api, isVersionConflict, messageOf, versionConflictNotice } from '@/shared/api/index.ts'
 import { toLocalInput, toUtcIso } from '@/shared/lib/index.ts'
-import { Button, Notice, SelectField, TextField, uiStyles } from '@/shared/ui/index.ts'
+import { Button, DateTimeField, Notice, SelectMenu, TextField, uiStyles } from '@/shared/ui/index.ts'
 
 export function LessonForm({
   subjects,
@@ -82,38 +82,34 @@ export function LessonForm({
         mutation.mutate()
       }}
     >
-      <SelectField
+      <SelectMenu
         label="Предмет"
-        value={values.subject_id}
-        onChange={(event) =>
+        value={String(values.subject_id)}
+        options={subjects.map((subject) => ({ value: String(subject.id), label: subject.name }))}
+        onChange={(next) =>
           setValues((current) => ({
             ...current,
-            subject_id: Number(event.target.value),
+            subject_id: Number(next),
             task_id: null,
           }))
         }
-      >
-        {subjects.map((subject) => (
-          <option key={subject.id} value={subject.id}>{subject.name}</option>
-        ))}
-      </SelectField>
-      <SelectField
+      />
+      <SelectMenu
         label="Связанное задание"
-        value={values.task_id ?? ''}
-        onChange={(event) =>
+        value={values.task_id ? String(values.task_id) : ''}
+        options={[
+          { value: '', label: 'Без задания' },
+          ...relatedTasks.map((task) => ({ value: String(task.id), label: task.title })),
+        ]}
+        onChange={(next) =>
           setValues((current) => ({
             ...current,
-            task_id: event.target.value ? Number(event.target.value) : null,
+            task_id: next ? Number(next) : null,
           }))
         }
-      >
-        <option value="">Без задания</option>
-        {relatedTasks.map((task) => (
-          <option key={task.id} value={task.id}>{task.title}</option>
-        ))}
-      </SelectField>
-      <TextField label="Начало" type="datetime-local" required value={values.starts_at} onChange={(event) => setValues((current) => ({ ...current, starts_at: event.target.value }))} />
-      <TextField label="Конец" type="datetime-local" required value={values.ends_at} onChange={(event) => setValues((current) => ({ ...current, ends_at: event.target.value }))} />
+      />
+      <DateTimeField label="Начало" required value={values.starts_at} onChange={(next) => setValues((current) => ({ ...current, starts_at: next }))} />
+      <DateTimeField label="Конец" required value={values.ends_at} onChange={(next) => setValues((current) => ({ ...current, ends_at: next }))} />
       <TextField label="Аудитория" value={values.classroom} onChange={(event) => setValues((current) => ({ ...current, classroom: event.target.value }))} />
       {notice ? <Notice>{notice}</Notice> : null}
       {error ? <Notice tone="error">{error}</Notice> : null}

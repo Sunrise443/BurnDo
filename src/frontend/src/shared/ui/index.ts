@@ -1,4 +1,7 @@
 export { Button } from './Button.tsx'
+export { DateTimeField } from './DateTimeField.tsx'
 export { ConfirmDialog, Notice } from './feedback.tsx'
-export { SelectField, TextArea, TextField } from './fields.tsx'
+export { TextArea, TextField } from './fields.tsx'
+export { SelectMenu } from './SelectMenu.tsx'
+export type { MenuOption } from './SelectMenu.tsx'
 export { default as uiStyles } from './ui.module.css'

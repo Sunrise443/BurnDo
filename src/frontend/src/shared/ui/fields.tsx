@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react'
+import type { InputHTMLAttributes, TextareaHTMLAttributes } from 'react'
 
 import styles from './ui.module.css'
 
@@ -26,15 +26,3 @@ export function TextArea({
   )
 }
 
-export function SelectField({
-  label,
-  children,
-  ...props
-}: { label: string; children: ReactNode } & SelectHTMLAttributes<HTMLSelectElement>) {
-  return (
-    <label className={styles.field}>
-      {label}
-      <select {...props}>{children}</select>
-    </label>
-  )
-}

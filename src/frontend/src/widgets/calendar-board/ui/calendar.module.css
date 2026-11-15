@@ -4,10 +4,63 @@
 }
 
 .toolbar,
-.toolbar div {
+.toolbar div,
+.nav {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.5rem;
+}
+
+.toolbar {
+  justify-content: space-between;
+}
+
+.mode,
+.modeOn,
+.arrow {
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.mode,
+.modeOn {
+  padding: 0.65rem 1rem;
+  background: transparent;
+  color: #1c1915;
+  box-shadow: inset 0 0 0 1px #d9d0c4;
+}
+
+.modeOn {
+  background: #fff1e0;
+  color: #9a3412;
+  box-shadow: inset 0 0 0 1px #9a3412;
+}
+
+.arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  background: transparent;
+  color: #1c1915;
+  box-shadow: inset 0 0 0 1px #d9d0c4;
+}
+
+.period {
+  margin: 0;
+  min-width: 12rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  text-align: center;
+}
+
+.fortnight {
+  display: grid;
+  gap: 0.55rem;
 }
 
 .week {
@@ -21,8 +74,8 @@
   background: #fffdf8;
   border: 1px solid #e6dfd4;
   border-radius: 0.9rem;
-  padding: 0.7rem;
-  min-height: 8rem;
+  padding: 0.55rem;
+  min-height: 4.6rem;
 }
 
 .day h3,
@@ -85,7 +138,8 @@
 }
 
 @media (max-width: 800px) {
-  .week {
-    grid-template-columns: 1fr;
+  .period {
+    min-width: 0;
+    flex: 1;
   }
 }

@@ -1,0 +1,23 @@
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.plate {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid #e6dfd4;
+  border-radius: 0.7rem;
+  background: #fffdf8;
+  color: #1c1915;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.plate:hover {
+  border-color: #9a3412;
+  color: #9a3412;
+}
