@@ -1,0 +1,91 @@
+.board {
+  display: grid;
+  gap: 1rem;
+}
+
+.toolbar,
+.toolbar div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.day,
+.details {
+  background: #fffdf8;
+  border: 1px solid #e6dfd4;
+  border-radius: 0.9rem;
+  padding: 0.7rem;
+  min-height: 8rem;
+}
+
+.day h3,
+.details h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+}
+
+.lesson,
+.deadline {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  border: 0;
+  border-radius: 0.55rem;
+  padding: 0.35rem 0.45rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lesson {
+  background: #e7f3ec;
+  color: #1f6b4a;
+}
+
+.deadline {
+  background: #fff1e0;
+  color: #9a3412;
+}
+
+.month {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.cell,
+.muted {
+  min-height: 4.5rem;
+  border: 1px solid #e6dfd4;
+  border-radius: 0.7rem;
+  background: #fffdf8;
+  text-align: left;
+  padding: 0.45rem;
+}
+
+.muted {
+  opacity: 0.45;
+}
+
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.details a {
+  color: #9a3412;
+}
+
+@media (max-width: 800px) {
+  .week {
+    grid-template-columns: 1fr;
+  }
+}

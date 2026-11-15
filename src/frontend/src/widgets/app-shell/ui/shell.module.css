@@ -1,0 +1,48 @@
+.shell {
+  min-height: 100vh;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e6dfd4;
+  background: #fffdf8;
+}
+
+.brand {
+  color: #9a3412;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  font-size: 1.3rem;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.nav a {
+  color: #3f3a34;
+  text-decoration: none;
+}
+
+.nav a[aria-current='page'] {
+  color: #9a3412;
+}
+
+.who {
+  margin: 0;
+  color: #6b6258;
+}
+
+.content {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}

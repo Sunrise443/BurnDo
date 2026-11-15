@@ -1,0 +1,91 @@
+.button,
+.ghost,
+.danger {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.button {
+  background: #9a3412;
+  color: #fffaf5;
+}
+
+.ghost {
+  background: transparent;
+  color: #1c1915;
+  box-shadow: inset 0 0 0 1px #d9d0c4;
+}
+
+.danger {
+  background: #9f1239;
+  color: white;
+}
+
+.button:disabled,
+.ghost:disabled,
+.danger:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #d9d0c4;
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  font: inherit;
+  background: white;
+  color: inherit;
+}
+
+.stack {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.card {
+  background: #fffdf8;
+  border: 1px solid #e6dfd4;
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+}
+
+.notice {
+  margin: 0;
+  color: #9a3412;
+}
+
+.error {
+  margin: 0;
+  color: #9f1239;
+}
+
+.dialog {
+  width: min(28rem, calc(100vw - 2rem));
+  border: 0;
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  box-shadow: 0 20px 60px rgb(28 25 21 / 20%);
+}
+
+.dialog::backdrop {
+  background: rgb(28 25 21 / 35%);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}

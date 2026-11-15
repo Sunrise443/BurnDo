@@ -1,0 +1,26 @@
+.list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list li {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  border-left: 4px solid #b45309;
+  background: #fff7ed;
+  border-radius: 0.8rem;
+}
+
+.list a {
+  color: #1c1915;
+  font-weight: 650;
+}
+
+.list span,
+.list time {
+  color: #6b6258;
+}
