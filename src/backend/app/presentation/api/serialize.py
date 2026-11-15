@@ -62,12 +62,13 @@ def subject_payload(subject: Subject) -> dict[str, object]:
     }
 
 
-def task_payload(task: Task, subject_name: str) -> dict[str, object]:
+def task_payload(task: Task, subject_name: str, subject_tag: str = "") -> dict[str, object]:
     return {
         "id": task.id,
         "group_id": task.group_id,
         "subject_id": task.subject_id,
         "subject_name": subject_name,
+        "subject_tag": subject_tag,
         "title": task.title,
         "description": task.description,
         "materials": task.materials,
@@ -77,15 +78,18 @@ def task_payload(task: Task, subject_name: str) -> dict[str, object]:
 
 
 def task_view_payload(view: TaskView) -> dict[str, object]:
-    return task_payload(view.task, view.subject_name)
+    return task_payload(view.task, view.subject_name, view.subject_tag)
 
 
-def lesson_payload(lesson: Lesson, subject_name: str, task_title: str | None) -> dict[str, object]:
+def lesson_payload(
+    lesson: Lesson, subject_name: str, task_title: str | None, subject_tag: str = ""
+) -> dict[str, object]:
     return {
         "id": lesson.id,
         "group_id": lesson.group_id,
         "subject_id": lesson.subject_id,
         "subject_name": subject_name,
+        "subject_tag": subject_tag,
         "task_id": lesson.task_id,
         "task_title": task_title,
         "starts_at": _iso(lesson.starts_at),
@@ -96,7 +100,7 @@ def lesson_payload(lesson: Lesson, subject_name: str, task_title: str | None) ->
 
 
 def lesson_view_payload(view: LessonView) -> dict[str, object]:
-    return lesson_payload(view.lesson, view.subject_name, view.task_title)
+    return lesson_payload(view.lesson, view.subject_name, view.task_title, view.subject_tag)
 
 
 def serialize_current(value: object) -> dict[str, object] | None:

@@ -124,12 +124,14 @@ class GroupView:
 class TaskView:
     task: Task
     subject_name: str
+    subject_tag: str
 
 
 @dataclass(frozen=True, slots=True)
 class LessonView:
     lesson: Lesson
     subject_name: str
+    subject_tag: str
     task_title: str | None
 
 

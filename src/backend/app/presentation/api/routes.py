@@ -425,6 +425,8 @@ def create_lesson(
         starts_at=body.starts_at,
         ends_at=body.ends_at,
         classroom=body.classroom,
+        repeat_biweekly=body.repeat_biweekly,
+        repeat_until=body.repeat_until,
     )
     return lesson_view_payload(view)
 
@@ -457,6 +459,8 @@ def update_lesson(
         starts_at=body.starts_at,
         ends_at=body.ends_at,
         classroom=body.classroom,
+        repeat_biweekly=body.repeat_biweekly,
+        repeat_until=body.repeat_until,
     )
     return lesson_view_payload(view)
 

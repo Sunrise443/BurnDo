@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, datetime, timedelta
 
 from fastapi.testclient import TestClient
 
@@ -104,7 +104,9 @@ def test_calendar_shows_lesson_and_deadline_the_same_way(client):
     assert first.status_code == second.status_code == 200
     assert first.json()["deadlines"][0]["deadline"] == second.json()["deadlines"][0]["deadline"]
     assert first.json()["lessons"][0]["subject_name"] == "Математика"
+    assert first.json()["lessons"][0]["subject_tag"] == ""
     assert first.json()["deadlines"][0]["title"] == "Контрольная"
+    assert first.json()["deadlines"][0]["subject_tag"] == ""
     peer.__exit__(None, None, None)
 
 
@@ -166,3 +168,112 @@ def test_head_updates_timezone_and_lists_members(client):
     }
     assert student.get("/groups/members").status_code == 403
     student.__exit__(None, None, None)
+
+
+def test_biweekly_lesson_keeps_the_local_time(client):
+    _head(client)
+    assert client.patch("/groups/current", json={"timezone": "America/New_York"}).status_code == 200
+    subject_id = client.post("/subjects", json={"name": "Алгебра", "tag": "АЛГ"}).json()["id"]
+    created = client.post(
+        "/lessons",
+        json={
+            "subject_id": subject_id,
+            "starts_at": "2026-02-22T15:00:00+00:00",
+            "ends_at": "2026-02-22T16:30:00+00:00",
+            "classroom": "ауд. 12",
+            "repeat_biweekly": True,
+            "repeat_until": "2026-03-08",
+        },
+    )
+    assert created.status_code == 201
+    lessons = client.get("/lessons").json()
+    assert [_moment(item["starts_at"]) for item in lessons] == [
+        _moment("2026-02-22T15:00:00+00:00"),
+        _moment("2026-03-08T14:00:00+00:00"),
+    ]
+    assert _moment(lessons[1]["ends_at"]) == _moment("2026-03-08T15:30:00+00:00")
+    assert lessons[0]["classroom"] == lessons[1]["classroom"] == "ауд. 12"
+    assert lessons[1]["subject_tag"] == "АЛГ"
+
+    window = client.get(
+        "/calendar",
+        params={"from": "2026-02-01T00:00:00+00:00", "to": "2026-04-01T00:00:00+00:00"},
+    )
+    assert window.status_code == 200
+    assert [item["subject_tag"] for item in window.json()["lessons"]] == ["АЛГ", "АЛГ"]
+
+
+def test_biweekly_lesson_rejects_a_short_or_huge_span(client):
+    _head(client)
+    subject_id = client.post("/subjects", json={"name": "Геометрия", "tag": "ГЕО"}).json()["id"]
+    short = client.post(
+        "/lessons",
+        json={
+            "subject_id": subject_id,
+            "starts_at": "2026-11-02T07:00:00+00:00",
+            "ends_at": "2026-11-02T08:30:00+00:00",
+            "repeat_biweekly": True,
+            "repeat_until": "2026-11-10",
+        },
+    )
+    assert short.status_code == 422
+    assert "две недели" in short.json()["message"]
+    missing = client.post(
+        "/lessons",
+        json={
+            "subject_id": subject_id,
+            "starts_at": "2026-11-02T07:00:00+00:00",
+            "ends_at": "2026-11-02T08:30:00+00:00",
+            "repeat_biweekly": True,
+        },
+    )
+    assert missing.status_code == 422
+    huge = client.post(
+        "/lessons",
+        json={
+            "subject_id": subject_id,
+            "starts_at": "2026-01-05T07:00:00+00:00",
+            "ends_at": "2026-01-05T08:00:00+00:00",
+            "repeat_biweekly": True,
+            "repeat_until": (date(2026, 1, 5) + timedelta(days=14 * 40)).isoformat(),
+        },
+    )
+    assert huge.status_code == 422
+    assert "40" in huge.json()["message"]
+    assert client.get("/lessons").json() == []
+
+
+def test_editing_a_lesson_can_add_biweekly_copies(client):
+    _head(client)
+    subject_id = client.post("/subjects", json={"name": "Физика", "tag": "ФИЗ"}).json()["id"]
+    created = client.post(
+        "/lessons",
+        json={
+            "subject_id": subject_id,
+            "starts_at": "2026-11-02T07:00:00+00:00",
+            "ends_at": "2026-11-02T08:30:00+00:00",
+        },
+    )
+    lesson = created.json()
+    updated = client.put(
+        f"/lessons/{lesson['id']}",
+        json={
+            "subject_id": subject_id,
+            "starts_at": "2026-11-02T07:00:00+00:00",
+            "ends_at": "2026-11-02T08:30:00+00:00",
+            "version": lesson["version"],
+            "repeat_biweekly": True,
+            "repeat_until": "2026-11-30",
+        },
+    )
+    assert updated.status_code == 200
+    starts = [_moment(item["starts_at"]) for item in client.get("/lessons").json()]
+    assert starts == [
+        _moment("2026-11-02T07:00:00+00:00"),
+        _moment("2026-11-16T07:00:00+00:00"),
+        _moment("2026-11-30T07:00:00+00:00"),
+    ]
+
+
+def _moment(value: str) -> datetime:
+    return datetime.fromisoformat(value)

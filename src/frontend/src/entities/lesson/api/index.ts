@@ -7,6 +7,7 @@ export type Lesson = {
   group_id: number
   subject_id: number
   subject_name: string
+  subject_tag: string
   task_id: number | null
   task_title: string | null
   starts_at: string

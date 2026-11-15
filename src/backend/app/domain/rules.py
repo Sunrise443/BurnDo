@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, date, datetime, timedelta
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from app.domain.errors import ValidationError
@@ -29,6 +29,43 @@ def require_interval(starts_at: datetime, ends_at: datetime) -> None:
         raise ValidationError("Укажите дату и время со смещением")
     if ends_at <= starts_at:
         raise ValidationError("Конец занятия должен быть позже начала")
+
+
+_BIWEEKLY_DAYS = 14
+_MAX_OCCURRENCES = 40
+
+
+def repeat_every_two_weeks(starts_at: datetime, until: date | None, timezone: str) -> list[datetime]:
+    if until is None:
+        raise ValidationError("Укажите дату, до которой повторять занятие")
+    zone = ZoneInfo(require_timezone(timezone))
+    local = starts_at.astimezone(zone)
+    if until < local.date():
+        raise ValidationError("Дата окончания повторения не может быть раньше начала")
+    moments = [starts_at]
+    step = 1
+    while True:
+        next_day = local.date() + timedelta(days=_BIWEEKLY_DAYS * step)
+        if next_day > until:
+            break
+        if step >= _MAX_OCCURRENCES:
+            raise ValidationError("Серия слишком длинная: не больше 40 занятий")
+        moments.append(
+            datetime(
+                next_day.year,
+                next_day.month,
+                next_day.day,
+                local.hour,
+                local.minute,
+                local.second,
+                local.microsecond,
+                tzinfo=zone,
+            ).astimezone(UTC)
+        )
+        step += 1
+    if len(moments) < 2:
+        raise ValidationError("Укажите дату хотя бы через две недели после начала")
+    return moments
 
 
 def require_task_of_subject(task: Task, *, subject_id: int, group_id: int) -> None:

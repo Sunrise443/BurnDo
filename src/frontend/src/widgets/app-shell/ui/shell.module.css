@@ -8,13 +8,13 @@
   gap: 1rem 1.5rem;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e6dfd4;
-  background: #fffdf8;
+  padding: 1rem 7.5rem 1rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
 }
 
 .brand {
-  color: #9a3412;
+  color: var(--accent);
   font-weight: 700;
   letter-spacing: -0.03em;
   text-decoration: none;
@@ -28,17 +28,17 @@
 }
 
 .nav a {
-  color: #3f3a34;
+  color: var(--nav);
   text-decoration: none;
 }
 
 .nav a[aria-current='page'] {
-  color: #9a3412;
+  color: var(--accent);
 }
 
 .who {
   margin: 0;
-  color: #6b6258;
+  color: var(--muted);
 }
 
 .content {

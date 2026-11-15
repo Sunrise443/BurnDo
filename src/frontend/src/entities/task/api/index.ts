@@ -7,6 +7,7 @@ export type Task = {
   group_id: number
   subject_id: number
   subject_name: string
+  subject_tag: string
   title: string
   description: string
   materials: string

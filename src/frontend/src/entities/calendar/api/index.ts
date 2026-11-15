@@ -6,6 +6,7 @@ export type CalendarLesson = {
   id: number
   subject_id: number
   subject_name: string
+  subject_tag: string
   task_id: number | null
   task_title: string | null
   starts_at: string
@@ -17,6 +18,7 @@ export type CalendarDeadline = {
   id: number
   subject_id: number
   subject_name: string
+  subject_tag: string
   title: string
   deadline: string
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { useCalendar } from '@/entities/calendar/index.ts'
+import { useCalendar, type CalendarDeadline, type CalendarLesson } from '@/entities/calendar/index.ts'
 import { dayKey, formatDateTime, formatDay, fortnightRange, monthRange, shiftAnchor, shiftMonth, toUtcIso } from '@/shared/lib/index.ts'
 import { Button } from '@/shared/ui/index.ts'
 
@@ -9,7 +9,7 @@ import styles from './calendar.module.css'
 
 type Selection =
   | { kind: 'lesson'; id: number; title: string; subjectId: number; taskId: number | null; when: string; place: string }
-  | { kind: 'deadline'; id: number; title: string; subjectId: number; when: string }
+  | { kind: 'deadline'; id: number; title: string; subjectId: number; subjectTag: string; when: string }
 
 export function CalendarBoard({ timeZone }: { timeZone: string }) {
   const [mode, setMode] = useState<'week' | 'month'>('week')
@@ -20,6 +20,8 @@ export function CalendarBoard({ timeZone }: { timeZone: string }) {
   const range = mode === 'week' ? fortnight : month
   const calendar = useCalendar(range.start, range.end)
   const period = mode === 'month' ? capitalize(month.label) : formatSpan(fortnight.days, timeZone)
+  const lessonsByDay = groupByDay(calendar.data?.lessons ?? [], (lesson) => dayKey(lesson.starts_at, timeZone))
+  const deadlinesByDay = groupByDay(calendar.data?.deadlines ?? [], (deadline) => dayKey(deadline.deadline, timeZone))
 
   function step(direction: -1 | 1) {
     setAnchor((current) =>
@@ -58,48 +60,46 @@ export function CalendarBoard({ timeZone }: { timeZone: string }) {
               {week.map((day) => (
                 <div key={day} className={styles.day}>
                   <h3>{formatDay(day, timeZone)}</h3>
-                  {calendar.data?.lessons
-                    .filter((lesson) => dayKey(lesson.starts_at, timeZone) === day)
-                    .map((lesson) => (
-                      <button
-                        key={`lesson-${lesson.id}`}
-                        type="button"
-                        className={styles.lesson}
-                        onClick={() =>
-                          setSelected({
-                            kind: 'lesson',
-                            id: lesson.id,
-                            title: lesson.subject_name,
-                            subjectId: lesson.subject_id,
-                            taskId: lesson.task_id,
-                            when: `${formatDateTime(lesson.starts_at, timeZone)} – ${formatDateTime(lesson.ends_at, timeZone)}`,
-                            place: lesson.classroom,
-                          })
-                        }
-                      >
-                        {lesson.subject_name}
-                      </button>
-                    ))}
-                  {calendar.data?.deadlines
-                    .filter((deadline) => dayKey(deadline.deadline, timeZone) === day)
-                    .map((deadline) => (
-                      <button
-                        key={`deadline-${deadline.id}`}
-                        type="button"
-                        className={styles.deadline}
-                        onClick={() =>
-                          setSelected({
-                            kind: 'deadline',
-                            id: deadline.id,
-                            title: deadline.title,
-                            subjectId: deadline.subject_id,
-                            when: formatDateTime(deadline.deadline, timeZone),
-                          })
-                        }
-                      >
-                        {deadline.title}
-                      </button>
-                    ))}
+                  {(lessonsByDay.get(day) ?? []).map((lesson) => (
+                    <button
+                      key={`lesson-${lesson.id}`}
+                      type="button"
+                      className={styles.lesson}
+                      onClick={() =>
+                        setSelected({
+                          kind: 'lesson',
+                          id: lesson.id,
+                          title: lesson.subject_name,
+                          subjectId: lesson.subject_id,
+                          taskId: lesson.task_id,
+                          when: `${formatDateTime(lesson.starts_at, timeZone)} – ${formatDateTime(lesson.ends_at, timeZone)}`,
+                          place: lesson.classroom,
+                        })
+                      }
+                    >
+                      {lesson.subject_name}
+                    </button>
+                  ))}
+                  {(deadlinesByDay.get(day) ?? []).map((deadline) => (
+                    <button
+                      key={`deadline-${deadline.id}`}
+                      type="button"
+                      className={styles.deadline}
+                      onClick={() =>
+                        setSelected({
+                          kind: 'deadline',
+                          id: deadline.id,
+                          title: deadline.title,
+                          subjectId: deadline.subject_id,
+                          subjectTag: subjectTag(deadline),
+                          when: formatDateTime(deadline.deadline, timeZone),
+                        })
+                      }
+                    >
+                      <span className={styles.badge}>{subjectTag(deadline)}</span>
+                      <span>{deadline.title}</span>
+                    </button>
+                  ))}
                 </div>
               ))}
             </div>
@@ -107,28 +107,68 @@ export function CalendarBoard({ timeZone }: { timeZone: string }) {
         </div>
       ) : (
         <div className={styles.month}>
+          {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((label) => (
+            <span key={label} className={styles.weekday}>
+              {label}
+            </span>
+          ))}
           {month.days.map((day) => {
             const inMonth = day.startsWith(month.monthKey)
-            const count =
-              (calendar.data?.lessons.filter((lesson) => dayKey(lesson.starts_at, timeZone) === day).length ?? 0) +
-              (calendar.data?.deadlines.filter((deadline) => dayKey(deadline.deadline, timeZone) === day).length ?? 0)
             return (
-              <button
-                key={day}
-                type="button"
-                className={inMonth ? styles.cell : styles.muted}
-                onClick={() => setAnchor(new Date(toUtcIso(`${day}T12:00`, timeZone)))}
-              >
-                <span>{Number(day.slice(-2))}</span>
-                {count > 0 ? <small>{count}</small> : null}
-              </button>
+              <div key={day} className={inMonth ? styles.cell : styles.muted}>
+                <span className={styles.dayNum}>{Number(day.slice(-2))}</span>
+                {(lessonsByDay.get(day) ?? []).map((lesson) => (
+                  <button
+                    key={`lesson-${lesson.id}`}
+                    type="button"
+                    className={styles.monthTag}
+                    title={lesson.subject_name}
+                    onClick={() =>
+                      setSelected({
+                        kind: 'lesson',
+                        id: lesson.id,
+                        title: lesson.subject_name,
+                        subjectId: lesson.subject_id,
+                        taskId: lesson.task_id,
+                        when: `${formatDateTime(lesson.starts_at, timeZone)} – ${formatDateTime(lesson.ends_at, timeZone)}`,
+                        place: lesson.classroom,
+                      })
+                    }
+                  >
+                    {subjectTag(lesson)}
+                  </button>
+                ))}
+                {(deadlinesByDay.get(day) ?? []).map((deadline) => (
+                  <button
+                    key={`deadline-${deadline.id}`}
+                    type="button"
+                    className={styles.monthDeadline}
+                    title={deadline.title}
+                    onClick={() =>
+                      setSelected({
+                        kind: 'deadline',
+                        id: deadline.id,
+                        title: deadline.title,
+                        subjectId: deadline.subject_id,
+                        subjectTag: subjectTag(deadline),
+                        when: formatDateTime(deadline.deadline, timeZone),
+                      })
+                    }
+                  >
+                    {subjectTag(deadline)}
+                  </button>
+                ))}
+              </div>
             )
           })}
         </div>
       )}
       {selected ? (
         <article className={styles.details}>
-          <h3>{selected.title}</h3>
+          <h3>
+            {selected.kind === 'deadline' ? <span className={styles.badge}>{selected.subjectTag}</span> : null}
+            {selected.title}
+          </h3>
           <p>{selected.when}</p>
           {selected.kind === 'lesson' && selected.place ? <p>{selected.place}</p> : null}
           <Link to={`/subjects/${selected.subjectId}`}>К предмету</Link>
@@ -155,6 +195,22 @@ function Chevron({ direction }: { direction: 'left' | 'right' }) {
       />
     </svg>
   )
+}
+
+function subjectTag(item: Pick<CalendarLesson | CalendarDeadline, 'subject_tag' | 'subject_name'>) {
+  const tag = item.subject_tag.trim()
+  return tag || item.subject_name
+}
+
+function groupByDay<T>(items: T[], keyOf: (item: T) => string) {
+  const grouped = new Map<string, T[]>()
+  for (const item of items) {
+    const key = keyOf(item)
+    const bucket = grouped.get(key)
+    if (bucket) bucket.push(item)
+    else grouped.set(key, [item])
+  }
+  return grouped
 }
 
 function capitalize(value: string) {

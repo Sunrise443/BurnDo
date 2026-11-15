@@ -31,7 +31,7 @@ def get_task(uow: UnitOfWork, actor: Actor, task_id: int) -> TaskView:
     group_id, _role = require_member(actor)
     task = _owned_task(uow, group_id, task_id)
     subject = _owned_subject(uow, group_id, task.subject_id)
-    return TaskView(task=task, subject_name=subject.name)
+    return TaskView(task=task, subject_name=subject.name, subject_tag=subject.tag)
 
 
 def create_task(
@@ -58,7 +58,7 @@ def create_task(
         )
     )
     uow.commit()
-    return TaskView(task=task, subject_name=subject.name)
+    return TaskView(task=task, subject_name=subject.name, subject_tag=subject.tag)
 
 
 def update_task(
@@ -87,7 +87,7 @@ def update_task(
     current.version = version + 1
     uow.tasks.save(current, expected_version=version)
     uow.commit()
-    return TaskView(task=current, subject_name=subject.name)
+    return TaskView(task=current, subject_name=subject.name, subject_tag=subject.tag)
 
 
 def delete_task(uow: UnitOfWork, actor: Actor, task_id: int) -> None:
@@ -99,8 +99,15 @@ def delete_task(uow: UnitOfWork, actor: Actor, task_id: int) -> None:
 
 
 def _with_names(uow: UnitOfWork, group_id: int, tasks: list[Task]) -> list[TaskView]:
-    names = {item.id: item.name for item in uow.subjects.list_for_group(group_id)}
-    return [TaskView(task=task, subject_name=names.get(task.subject_id, "")) for task in tasks]
+    subjects = {item.id: item for item in uow.subjects.list_for_group(group_id)}
+    return [
+        TaskView(
+            task=task,
+            subject_name=subjects[task.subject_id].name if task.subject_id in subjects else "",
+            subject_tag=subjects[task.subject_id].tag if task.subject_id in subjects else "",
+        )
+        for task in tasks
+    ]
 
 
 def _owned_subject(uow: UnitOfWork, group_id: int, subject_id: int) -> Subject:

@@ -76,8 +76,8 @@ export function monthRange(anchor: Date, timeZone: string) {
     }
   }
   return {
-    start: toUtcIso(`${formatYmd(first)}T00:00`, timeZone),
-    end: toUtcIso(`${formatYmd(nextMonth)}T00:00`, timeZone),
+    start: toUtcIso(`${days[0]}T00:00`, timeZone),
+    end: toUtcIso(`${formatYmd(cursor)}T00:00`, timeZone),
     days,
     monthKey: `${current.year}-${String(current.month).padStart(2, '0')}`,
     label: new Intl.DateTimeFormat('ru-RU', {

@@ -8,16 +8,16 @@
   display: inline-flex;
   align-items: center;
   padding: 0.35rem 0.7rem;
-  border: 1px solid #e6dfd4;
+  border: 1px solid var(--line);
   border-radius: 0.7rem;
-  background: #fffdf8;
-  color: #1c1915;
+  background: var(--surface);
+  color: var(--text);
   font-size: 0.92rem;
   font-weight: 600;
   text-decoration: none;
 }
 
 .plate:hover {
-  border-color: #9a3412;
-  color: #9a3412;
+  border-color: var(--accent);
+  color: var(--accent);
 }

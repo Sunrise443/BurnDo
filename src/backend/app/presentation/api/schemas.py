@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Annotated, Literal
 
 from pydantic import AfterValidator, BaseModel, EmailStr, Field
@@ -82,6 +82,8 @@ class LessonIn(BaseModel):
     starts_at: AwareDatetime
     ends_at: AwareDatetime
     classroom: str = Field(default="", max_length=200)
+    repeat_biweekly: bool = False
+    repeat_until: date | None = None
 
 
 class LessonUpdateIn(LessonIn):

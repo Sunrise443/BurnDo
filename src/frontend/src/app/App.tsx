@@ -14,6 +14,7 @@ import { SubjectDetailsPage } from '@/pages/subject-details/index.ts'
 import { SubjectListPage } from '@/pages/subject-list/index.ts'
 import { TaskDetailsPage } from '@/pages/task-details/index.ts'
 import { TaskListPage } from '@/pages/task-list/index.ts'
+import { ThemeToggle, uiStyles } from '@/shared/ui/index.ts'
 import { AppShell } from '@/widgets/app-shell/index.ts'
 
 const queryClient = new QueryClient({
@@ -24,6 +25,9 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <div className={uiStyles.themeFloat}>
+          <ThemeToggle />
+        </div>
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route path="/login" element={<LoginPage />} />
