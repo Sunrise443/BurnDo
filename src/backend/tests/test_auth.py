@@ -32,7 +32,7 @@ def test_login_returns_account_and_session_cookie(client):
         json={"email": "student@example.com", "password": "student12345"},
     )
 
-    assert response.status_code == 201 #
+    assert response.status_code == 200
     assert response.json() == {
         "id": registered.json()["id"],
         "name": "Иван Иванов",
