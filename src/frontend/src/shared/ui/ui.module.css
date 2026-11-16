@@ -1,0 +1,401 @@
+.button,
+.ghost,
+.danger {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.button {
+  background: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.danger {
+  background: var(--danger);
+  color: var(--on-danger);
+}
+
+.button:disabled,
+.ghost:disabled,
+.danger:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  font: inherit;
+  background: var(--input);
+  color: inherit;
+}
+
+.stack {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+}
+
+.card > button {
+  align-self: flex-start;
+}
+
+.notice {
+  margin: 0;
+  color: var(--accent);
+}
+
+.notice a {
+  color: var(--accent);
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+}
+
+.dialog {
+  width: min(28rem, calc(100vw - 2rem));
+  border: 0;
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 20px 60px var(--shadow);
+}
+
+.dialog::backdrop {
+  background: var(--backdrop);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.menu {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+}
+
+.menuLabel {
+  color: inherit;
+}
+
+.menuControl,
+.pickerControl {
+  position: relative;
+}
+
+.menuTrigger,
+.pickerTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  font: inherit;
+  background: var(--input);
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.menuTrigger:focus-visible,
+.pickerTrigger:focus-visible,
+.menuItem:focus-visible,
+.dayButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.placeholder {
+  color: var(--muted);
+}
+
+.chevron {
+  color: var(--accent);
+  font-size: 0.8rem;
+}
+
+.menuList,
+.picker {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  box-shadow: 0 16px 40px var(--shadow);
+}
+
+.menuList {
+  right: 0;
+  max-height: 14rem;
+  overflow: auto;
+}
+
+.picker.popAbove,
+.menuList.popAbove {
+  top: auto;
+  bottom: calc(100% + 0.35rem);
+}
+
+.menuItem,
+.menuItemActive {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 0.6rem;
+  padding: 0.5rem 0.65rem;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menuItem:hover,
+.menuItemActive {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.picker {
+  width: 17.5rem;
+  padding: 0.75rem;
+}
+
+.pickerHead,
+.timeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.pickerHead strong {
+  font-size: 0.95rem;
+}
+
+.iconButton,
+.dayButton {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.iconButton {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.weekdays,
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.15rem;
+  margin-top: 0.55rem;
+}
+
+.weekdays {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+.dayButton {
+  height: 1.9rem;
+  border-radius: 0.5rem;
+}
+
+.dayButton:hover {
+  background: var(--accent-soft);
+}
+
+.dayMuted {
+  color: var(--placeholder);
+}
+
+.daySelected,
+.daySelected:hover {
+  background: var(--accent-fill);
+  color: var(--on-accent);
+}
+
+.timeRow {
+  margin-top: 0.7rem;
+}
+
+.timeRow label {
+  display: grid;
+  gap: 0.2rem;
+  flex: 1;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.timeRow input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.6rem;
+  padding: 0.4rem 0.5rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--input);
+}
+
+.proxy {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.92rem;
+}
+
+.check input {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.themeFloat {
+  position: fixed;
+  top: 0.45rem;
+  right: 1rem;
+  z-index: 40;
+}
+
+.theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  cursor: pointer;
+  overflow: hidden;
+  transition: background-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.theme:hover {
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.theme:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.themeIcons {
+  position: relative;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.sun,
+.moon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.35s ease;
+}
+
+.sun {
+  opacity: 1;
+  transform: translateY(0) rotate(0deg) scale(1);
+}
+
+.moon {
+  opacity: 0;
+  transform: translateY(0.45rem) rotate(-30deg) scale(0.65);
+}
+
+.theme[aria-pressed='true'] .sun {
+  opacity: 0;
+  transform: translateY(-0.45rem) rotate(70deg) scale(0.65);
+}
+
+.theme[aria-pressed='true'] .moon {
+  opacity: 1;
+  transform: translateY(0) rotate(0deg) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sun,
+  .moon,
+  .theme {
+    transition: none;
+  }
+}

@@ -1,15 +1,77 @@
 :root {
+  color-scheme: light;
+  --bg: #f3f4f6;
+  --text: #1c212b;
+  --surface: #ffffff;
+  --input: #ffffff;
+  --line: #e3e6ec;
+  --line-strong: #d0d5de;
+  --accent: #b43333;
+  --accent-fill: #b43333;
+  --accent-soft: #f7eaea;
+  --on-accent: #fff8f8;
+  --danger: #9f1239;
+  --on-danger: #fff7f8;
+  --muted: #5e6776;
+  --nav: #2c3340;
+  --lesson-bg: #e5f2ec;
+  --lesson-text: #1b6b4c;
+  --deadline-bg: #f7eaea;
+  --deadline-text: #8f2a2a;
+  --deadline-edge: #b43333;
+  --deadline-soft: #fbf3f3;
+  --placeholder: #8b93a3;
+  --shadow: rgb(22 26 34 / 12%);
+  --backdrop: rgb(22 26 34 / 40%);
   font-family: system-ui, 'Segoe UI', sans-serif;
-  color: #1c1915;
-  background: #f6f3ee;
+  color: var(--text);
+  background: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #16181e;
+  --text: #e4e7ee;
+  --surface: #1e2129;
+  --input: #262a34;
+  --line: #2e3340;
+  --line-strong: #41485a;
+  --accent: #e06a6a;
+  --accent-fill: #c44747;
+  --accent-soft: #3d2428;
+  --on-accent: #fff6f6;
+  --danger: #f0a0ae;
+  --on-danger: #241418;
+  --muted: #9aa3b5;
+  --nav: #d7dce6;
+  --lesson-bg: #1b2b26;
+  --lesson-text: #9ad4b8;
+  --deadline-bg: #3d2428;
+  --deadline-text: #f0b4b4;
+  --deadline-edge: #e06a6a;
+  --deadline-soft: #2c1e22;
+  --placeholder: #7e8798;
+  --shadow: rgb(0 0 0 / 40%);
+  --backdrop: rgb(8 10 16 / 62%);
 }
 
 body {
   margin: 0;
 }
 
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
 #root {
   min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
 }
