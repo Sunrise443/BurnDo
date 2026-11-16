@@ -3,6 +3,78 @@ from fastapi.testclient import TestClient
 from tests.conftest import register, reset_token
 
 
+def test_login_returns_account_and_session_cookie(client):
+    head = register(
+        client,
+        email="head@example.com",
+        role="head",
+        name="Староста",
+        password="password1",
+        group_name="БПИ2302",
+    )
+    assert head.status_code == 201
+    invite = client.get("/groups/current").json()["invite_code"]
+    assert client.post("/auth/logout").status_code == 204
+
+    registered = register(
+        client,
+        email="student@example.com",
+        name="Иван Иванов",
+        password="student12345",
+    )
+    assert registered.status_code == 201
+    joined = client.post("/groups/join", json={"code": invite})
+    assert joined.status_code == 204
+    assert client.post("/auth/logout").status_code == 204
+
+    response = client.post(
+        "/auth/login",
+        json={"email": "student@example.com", "password": "student12345"},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "id": registered.json()["id"],
+        "name": "Иван Иванов",
+        "email": "student@example.com",
+        "role": "student",
+        "group_id": head.json()["group_id"],
+        "group_name": "БПИ2302",
+        "timezone": "Europe/Moscow",
+    }
+    set_cookie = response.headers["set-cookie"]
+    assert set_cookie.startswith("burndo_session=")
+    assert "HttpOnly" in set_cookie
+    assert "SameSite=lax" in set_cookie
+    assert "Max-Age=1209600" in set_cookie
+    assert "Path=/" in set_cookie
+    assert client.get("/me").json()["email"] == "student@example.com"
+
+
+def test_login_rejects_wrong_password(client):
+    registered = register(
+        client,
+        email="student@example.com",
+        name="Иван Иванов",
+        password="student12345",
+    )
+    assert registered.status_code == 201
+    assert client.post("/auth/logout").status_code == 204
+
+    response = client.post(
+        "/auth/login",
+        json={"email": "student@example.com", "password": "wrongpassword"},
+    )
+
+    assert response.status_code == 401
+    assert response.json() == {
+        "code": "authentication",
+        "message": "Неверный email или пароль",
+    }
+    assert "set-cookie" not in response.headers
+    assert client.get("/me").status_code == 401
+
+
 def test_register_head_creates_group_and_student_stays_outside(client):
     head = register(client, email="head@example.com", role="head", name="Староста")
     assert head.status_code == 201
