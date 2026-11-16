@@ -35,7 +35,9 @@ _BIWEEKLY_DAYS = 14
 _MAX_OCCURRENCES = 40
 
 
-def repeat_every_two_weeks(starts_at: datetime, until: date | None, timezone: str) -> list[datetime]:
+def repeat_every_two_weeks(
+    starts_at: datetime, until: date | None, timezone: str
+) -> list[datetime]:
     if until is None:
         raise ValidationError("Укажите дату, до которой повторять занятие")
     zone = ZoneInfo(require_timezone(timezone))
